@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Slides Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f4efe6;
+            --bg-deep: #1f3b2f;
+            --panel: rgba(255, 250, 242, 0.86);
+            --panel-strong: rgba(255, 248, 236, 0.94);
+            --text: #1c1f1a;
+            --muted: #5d6459;
+            --accent: #d96941;
+            --accent-soft: rgba(217, 105, 65, 0.18);
+            --line: rgba(28, 31, 26, 0.12);
+            --shadow: 0 24px 80px rgba(31, 59, 47, 0.15);
+            --font-display: "Cormorant Garamond", serif;
+            --font-body: "Manrope", sans-serif;
+            --duration: 700ms;
+            --ease: cubic-bezier(0.22, 1, 0.36, 1);
+            --title-size: clamp(1.5rem, 5vw, 4rem);
+            --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+            --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+            --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
+            --small-size: clamp(0.65rem, 1vw, 0.875rem);
+            --slide-padding: clamp(1rem, 4vw, 4rem);
+            --content-gap: clamp(0.5rem, 2vw, 2rem);
+            --element-gap: clamp(0.25rem, 1vw, 1rem);
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            padding: var(--slide-padding);
+        }
+
+        .card, .container, .content-box {
+            max-width: min(90vw, 1000px);
+            max-height: min(80vh, 700px);
+        }
+
+        .feature-list, .bullet-list {
+            gap: clamp(0.4rem, 1vh, 1rem);
+        }
+
+        .feature-list li, .bullet-list li {
+            font-size: var(--body-size);
+            line-height: 1.4;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+
+        img, .image-container {
+            max-width: 100%;
+            max-height: min(50vh, 400px);
+            object-fit: contain;
+        }
+
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(0.75rem, 3vw, 2rem);
+                --content-gap: clamp(0.4rem, 1.5vw, 1rem);
+                --title-size: clamp(1.25rem, 4.5vw, 2.5rem);
+                --h2-size: clamp(1rem, 3vw, 1.75rem);
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+                --content-gap: clamp(0.3rem, 1vw, 0.75rem);
+                --title-size: clamp(1.1rem, 4vw, 2rem);
+                --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+            }
+
+            .nav-dots, .keyboard-hint, .decorative {
+                display: none;
+            }
+        }
+
+        @media (max-height: 500px) {
+            :root {
+                --slide-padding: clamp(0.4rem, 2vw, 1rem);
+                --title-size: clamp(1rem, 3.5vw, 1.5rem);
+                --h2-size: clamp(0.9rem, 2.5vw, 1.25rem);
+                --body-size: clamp(0.65rem, 1vw, 0.85rem);
+            }
+        }
+
+        @media (max-width: 600px) {
+            :root {
+                --title-size: clamp(1.25rem, 7vw, 2.5rem);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(217, 105, 65, 0.18), transparent 28%),
+                radial-gradient(circle at 80% 18%, rgba(31, 59, 47, 0.22), transparent 26%),
+                linear-gradient(180deg, #f8f2e8 0%, #efe5d6 100%);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            width: 0;
+            background: linear-gradient(90deg, #d96941 0%, #1f3b2f 100%);
+            z-index: 20;
+            transition: width 220ms ease-out;
+        }
+
+        .nav-dots {
+            position: fixed;
+            right: clamp(0.75rem, 2vw, 1.5rem);
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            z-index: 20;
+        }
+
+        .nav-dot {
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 999px;
+            border: 1px solid rgba(31, 59, 47, 0.35);
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+        }
+
+        .nav-dot.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: scale(1.18);
+        }
+
+        .slide::before {
+            content: "";
+            position: absolute;
+            inset: clamp(1rem, 2vw, 1.5rem);
+            border: 1px solid var(--line);
+            pointer-events: none;
+        }
+
+        .hero {
+            justify-content: space-between;
+            gap: var(--content-gap);
+        }
+
+        .kicker {
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-size: var(--small-size);
+            color: var(--muted);
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            line-height: 0.95;
+        }
+
+        h1 {
+            font-size: var(--title-size);
+            max-width: 10ch;
+        }
+
+        h2 {
+            font-size: var(--h2-size);
+            margin-bottom: 0.4em;
+        }
+
+        p {
+            font-size: var(--body-size);
+            line-height: 1.55;
+            color: var(--muted);
+            max-width: 62ch;
+        }
+
+        .hero-panel {
+            width: min(100%, 54rem);
+            padding: clamp(1.25rem, 3vw, 2.5rem);
+            background: linear-gradient(180deg, var(--panel-strong), rgba(255, 247, 235, 0.78));
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 0.9fr;
+            gap: clamp(1rem, 3vw, 2rem);
+            align-items: end;
+        }
+
+        .accent-block {
+            align-self: stretch;
+            background:
+                linear-gradient(180deg, rgba(31, 59, 47, 0.98), rgba(31, 59, 47, 0.84)),
+                linear-gradient(140deg, rgba(217, 105, 65, 0.22), transparent);
+            color: #f6f0e7;
+            padding: clamp(1rem, 2vw, 1.5rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: clamp(14rem, 28vw, 22rem);
+        }
+
+        .accent-block strong {
+            font-family: var(--font-display);
+            font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+            font-weight: 600;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: grid;
+            margin-top: 1rem;
+        }
+
+        .feature-list li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.8rem;
+            align-items: start;
+            padding: 0.85rem 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .feature-list li::before {
+            content: counter(item, decimal-leading-zero);
+            counter-increment: item;
+            font-size: var(--small-size);
+            color: var(--accent);
+            margin-top: 0.2rem;
+        }
+
+        .feature-list {
+            counter-reset: item;
+        }
+
+        .cards {
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: rgba(255, 251, 245, 0.78);
+            border: 1px solid rgba(28, 31, 26, 0.08);
+            padding: clamp(1rem, 2vw, 1.4rem);
+            min-height: 10rem;
+            box-shadow: 0 16px 40px rgba(31, 59, 47, 0.08);
+        }
+
+        .card h3 {
+            font-size: var(--h3-size);
+            margin-bottom: 0.45rem;
+        }
+
+        .slide-number,
+        .keyboard-hint {
+            position: absolute;
+            bottom: clamp(1rem, 2vw, 1.5rem);
+            font-size: var(--small-size);
+            color: var(--muted);
+            z-index: 5;
+        }
+
+        .slide-number {
+            left: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .keyboard-hint {
+            right: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(26px);
+            transition:
+                opacity var(--duration) var(--ease),
+                transform var(--duration) var(--ease);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide.visible .reveal:nth-child(1) { transition-delay: 80ms; }
+        .slide.visible .reveal:nth-child(2) { transition-delay: 160ms; }
+        .slide.visible .reveal:nth-child(3) { transition-delay: 240ms; }
+        .slide.visible .reveal:nth-child(4) { transition-delay: 320ms; }
+        .slide.visible .reveal:nth-child(5) { transition-delay: 400ms; }
+
+        @media (max-width: 900px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" aria-hidden="true"></div>
+    <nav class="nav-dots" aria-label="Slide navigation"></nav>
+
+    <section class="slide visible">
+        <div class="slide-content hero">
+            <div class="hero-grid hero-panel">
+                <div>
+                    <p class="kicker reveal">Frontend Slides / Demo Deck</p>
+                    <h1 class="reveal">Zero-dependency slides that feel designed.</h1>
+                    <p class="reveal">
+                        This minimal example shows the repo’s intended workflow: a standalone HTML file,
+                        viewport-safe slides, and lightweight navigation with no build step.
+                    </p>
+                </div>
+                <aside class="accent-block reveal">
+                    <p>Open the file directly, or export and deploy it with the included scripts.</p>
+                    <strong>3 slides</strong>
+                </aside>
+            </div>
+            <div class="keyboard-hint">Arrow keys, space, mouse wheel</div>
+            <div class="slide-number">01</div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="slide-content">
+            <div class="container hero-panel">
+                <p class="kicker reveal">What this repo is</p>
+                <h2 class="reveal">A toolkit for authoring shareable HTML presentations.</h2>
+                <ul class="feature-list">
+                    <li class="reveal">Each presentation is a single HTML document with inline CSS and JavaScript.</li>
+                    <li class="reveal">The layout rules enforce full-viewport slides with no internal scrolling.</li>
+                    <li class="reveal">Helper scripts handle PDF export, PowerPoint extraction, and deployment.</li>
+                    <li class="reveal">You preview by opening the HTML file, not by running a dev server.</li>
+                </ul>
+            </div>
+            <div class="slide-number">02</div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="slide-content">
+            <div class="container">
+                <p class="kicker reveal">Next actions</p>
+                <h2 class="reveal">Use this file as your starting point.</h2>
+                <div class="grid cards">
+                    <article class="card reveal">
+                        <h3>Customize content</h3>
+                        <p>Replace the copy, adjust theme variables, and add or remove slides directly in `index.html`.</p>
+                    </article>
+                    <article class="card reveal">
+                        <h3>Export to PDF</h3>
+                        <p>Run `bash scripts/export-pdf.sh ./index.html` when you need a static handout.</p>
+                    </article>
+                    <article class="card reveal">
+                        <h3>Deploy to a URL</h3>
+                        <p>Run `bash scripts/deploy.sh ./index.html` when you want a shareable hosted version.</p>
+                    </article>
+                </div>
+            </div>
+            <div class="slide-number">03</div>
+        </div>
+    </section>
+
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = [...document.querySelectorAll(".slide")];
+                this.progressBar = document.querySelector(".progress-bar");
+                this.navDots = document.querySelector(".nav-dots");
+                this.currentSlide = 0;
+                this.isThrottled = false;
+                this.setupIntersectionObserver();
+                this.setupNavDots();
+                this.setupKeyboardNav();
+                this.setupWheelNav();
+                this.setupTouchNav();
+                this.updateProgress();
+            }
+
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                const index = this.slides.indexOf(entry.target);
+                                this.currentSlide = index;
+                                entry.target.classList.add("visible");
+                                this.updateProgress();
+                                this.updateDots();
+                            }
+                        });
+                    },
+                    { threshold: 0.6 }
+                );
+
+                this.slides.forEach((slide) => observer.observe(slide));
+            }
+
+            setupNavDots() {
+                this.navDots.innerHTML = "";
+                this.slides.forEach((_, index) => {
+                    const dot = document.createElement("button");
+                    dot.className = "nav-dot";
+                    dot.type = "button";
+                    dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+                    dot.addEventListener("click", () => this.goToSlide(index));
+                    this.navDots.appendChild(dot);
+                });
+                this.updateDots();
+            }
+
+            setupKeyboardNav() {
+                window.addEventListener("keydown", (event) => {
+                    if (["ArrowDown", "PageDown", " ", "Enter"].includes(event.key)) {
+                        event.preventDefault();
+                        this.goToSlide(Math.min(this.currentSlide + 1, this.slides.length - 1));
+                    }
+
+                    if (["ArrowUp", "PageUp"].includes(event.key)) {
+                        event.preventDefault();
+                        this.goToSlide(Math.max(this.currentSlide - 1, 0));
+                    }
+
+                    if (event.key === "Home") {
+                        event.preventDefault();
+                        this.goToSlide(0);
+                    }
+
+                    if (event.key === "End") {
+                        event.preventDefault();
+                        this.goToSlide(this.slides.length - 1);
+                    }
+                });
+            }
+
+            setupWheelNav() {
+                window.addEventListener(
+                    "wheel",
+                    (event) => {
+                        if (this.isThrottled || Math.abs(event.deltaY) < 25) {
+                            return;
+                        }
+
+                        this.isThrottled = true;
+                        const direction = event.deltaY > 0 ? 1 : -1;
+                        this.goToSlide(
+                            Math.max(0, Math.min(this.currentSlide + direction, this.slides.length - 1))
+                        );
+
+                        window.setTimeout(() => {
+                            this.isThrottled = false;
+                        }, 700);
+                    },
+                    { passive: true }
+                );
+            }
+
+            setupTouchNav() {
+                let touchStartY = 0;
+
+                window.addEventListener("touchstart", (event) => {
+                    touchStartY = event.changedTouches[0].clientY;
+                }, { passive: true });
+
+                window.addEventListener("touchend", (event) => {
+                    const touchEndY = event.changedTouches[0].clientY;
+                    const deltaY = touchStartY - touchEndY;
+
+                    if (Math.abs(deltaY) < 50) {
+                        return;
+                    }
+
+                    if (deltaY > 0) {
+                        this.goToSlide(Math.min(this.currentSlide + 1, this.slides.length - 1));
+                    } else {
+                        this.goToSlide(Math.max(this.currentSlide - 1, 0));
+                    }
+                }, { passive: true });
+            }
+
+            goToSlide(index) {
+                this.slides[index].scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+
+            updateProgress() {
+                const progress = ((this.currentSlide + 1) / this.slides.length) * 100;
+                this.progressBar.style.width = `${progress}%`;
+            }
+
+            updateDots() {
+                [...this.navDots.children].forEach((dot, index) => {
+                    dot.classList.toggle("active", index === this.currentSlide);
+                });
+            }
+        }
+
+        new SlidePresentation();
+    </script>
+</body>
+</html>
